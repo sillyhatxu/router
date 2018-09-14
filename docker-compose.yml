@@ -1,0 +1,63 @@
+version: '3.3'
+
+services:
+  consul:
+    image: consul:1.2.0
+    ports:
+      - "8400:8400"
+      - "8500:8500"
+    command: agent -dev -ui -server -bootstrap -client 0.0.0.0
+
+  api-a:
+    build: ./api_a
+    image: "api-a"
+    environment:
+      ENVIROMENT_PROFILES_ACTIVE: dev
+      MODULE_NAME: api-a
+      PORT: 12001
+    deploy:
+      replicas: 1
+    ports:
+      - 12001:12001
+    depends_on:
+      - consul
+
+  api-b:
+    build: ./api_b
+    image: "api-b"
+    environment:
+      ENVIROMENT_PROFILES_ACTIVE: dev
+    deploy:
+      replicas: 1
+    ports:
+      - 12002:12002
+    depends_on:
+      - consul
+
+  api-c:
+    build: ./api_c
+    image: "api-c"
+    environment:
+      ENVIROMENT_PROFILES_ACTIVE: dev
+    deploy:
+      replicas: 1
+    ports:
+      - 12003:12003
+    depends_on:
+      - consul
+
+ENV ENVIROMENT_PROFILES_ACTIVE dt
+ENV CONSUL_ADDRESS localhost
+ENV MODULE_NAME deja
+ENV PORT 80
+
+#  router:
+#    image: "111909622691.dkr.ecr.ap-southeast-1.amazonaws.com/golang.router:beta-2.1.31"
+#    environment:
+#      ENVIROMENT_PROFILES_ACTIVE: dt
+#    deploy:
+#      replicas: 1
+#    ports:
+#      - 12004:12004
+#    depends_on:
+#      - consul
