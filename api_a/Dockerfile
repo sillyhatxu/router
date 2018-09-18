@@ -2,7 +2,7 @@ FROM alpine
 LABEL MAINTAINER="xushikuan@mozat.com"
 
 ENV ENVIROMENT_PROFILES_ACTIVE dt
-ENV CONSUL_ADDRESS localhost
+##ENV CONSUL_ADDRESS localhost
 ENV MODULE_NAME deja
 ENV PORT 80
 
@@ -18,4 +18,4 @@ COPY main /go
 COPY . /go/api_a
 
 ##-consul-address=172.28.2.106:8500 -module-name=api-a -port=12001
-ENTRYPOINT ./main -enviroment=$ENVIROMENT_PROFILES_ACTIVE -consul-address=$CONSUL_ADDRESS -module-name=$MODULE_NAME -port=$PORT
+ENTRYPOINT ./main -enviroment=$ENVIROMENT_PROFILES_ACTIVE -consul-address=${CONSUL_ADDRESS:+CONSUL_ADDRESS} -module-name=$MODULE_NAME -port=$PORT

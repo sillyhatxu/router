@@ -2,7 +2,8 @@ package main
 
 import (
 	log "github.com/xushikuan/microlog"
-	consulClient "github.com/xushikuan/consul-client"
+	//consulClient "github.com/xushikuan/consul-client"
+	consulClient "consul-client"
 	"github.com/gin-gonic/gin"
 	"strconv"
 	"net/http"
@@ -13,6 +14,7 @@ import (
 func main() {
 	router := gin.Default()
 
+	enviroment := flag.String("enviroment", "", "a string")
 	consulAddress := flag.String("consul-address", "", "a string")
 	moduleName := flag.String("module-name", "", "a string")
 	port := flag.Int("port", 80, "an int")
@@ -35,7 +37,7 @@ func main() {
 			"Status":"UP",
 		})
 	})
-	consulServer := consulClient.NewConsulServer("dev",*moduleName,*port,healthAPI)
+	consulServer := consulClient.NewConsulServer(*enviroment,*moduleName,*port,healthAPI)
 	consulServer.SetConsulAddress(*consulAddress)
 	consulServer.RegisterServer()
 	router.Run(":" + strconv.Itoa(*port))
